@@ -49,14 +49,19 @@ def competition():
 @app.route('/activities')
 def activities():
     return render_template('activities.html')
-# 網頁/ask的處理
 @app.route('/ask', methods=['GET', 'POST'])
 def ask_question():
     if request.method == 'POST':
-        q = request.form['question']
-        a = questions_answers[q]
+        q = request.form.get('question', '').strip()
+        if not q:
+            return render_template('ask.html', question="", answer="請輸入問題。")
+
+        # 如果問題不存在，給出預設提示
+        a = questions_answers.get(q, "抱歉，我還不知道這個問題的答案。")
         return render_template('ask.html', question=q, answer=a)
+
     return render_template('ask.html', question="", answer="")
+
 @app.route('/leadership')
 def leadership():
     return render_template('leadership.html')
